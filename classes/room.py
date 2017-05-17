@@ -10,3 +10,6 @@ class Office(Room):
 
 
 
+class Living_spaces(Room):
+	def __init__(self,name):
+		super(Living_spaces,self).__init__(name)
