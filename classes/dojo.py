@@ -8,7 +8,8 @@ class Dojo(object):
 		self.unoccupied_living = []
 		self.allocations_offices = {}		#offices with no. of occupants
 		self.allocations_living = {}		#living with no. occupants
-		self.allocated = {}					#all allocated people and which room
+		self.allocated_office = {}			#stores allocated people with coreesponding room			
+		self.allocated_living = {}			#stores allocated people with coreesponding room
 		self.all_people = []
 		self.unallocated = []
 
@@ -16,16 +17,20 @@ class Dojo(object):
 		
 		if room_type == 'office':
 			for each in room_list:
-				new_room = Office(each)
-				self.offices.append(each)
-				print ("room created ")
-		
+				if each not in self.offices and each not in self.living_spaces:
+					new_room = Office(each)
+					self.offices.append(each)
+					print ("An Office called", each , "has been created")
+				else:
+					print ("Room name",each ,"already in use")
 		else:
 			for each in room_list:
-				new_room = Office(each)
-				self.living_spaces.append(each)
-				print ("room_created2 ")
-		
+				if each not in self.offices and each not in self.living_spaces:
+					new_room = Office(each)
+					self.living_spaces.append(each)
+					print ("A Living Space called", each , "has been created")
+				else:
+					print ("Room name",each ,"already in use")			
 
 	def update_room(self):
 
@@ -43,7 +48,7 @@ class Dojo(object):
 
 	def allocate_office(self, person_name):
 
-		new.update_room()
+		self.update_room()
 		offices_to_let = []
 
 		for each_room in self.allocations_offices.keys():
@@ -54,17 +59,17 @@ class Dojo(object):
 		if len(offices_to_let) > 0:
 
 			allocate = random.choice(offices_to_let)
-			self.allocated.update({allocate : person_name})
+			self.allocated_office.update({person_name : allocate})
 			self.allocations_offices[allocate] = self.allocations_offices[allocate] + 1
-			print ("Office allocated")
-			print (self.allocated)
+			print ("An office", allocate, "has been allocated to", person_name,)
+			
 
 		else:
 			self.unallocated.append(person_name)
 
 	def allocate_living(self,person_name):
 
-		new.update_room()
+		self.update_room()
 		living_to_let = []
 
 		for each_room in self.allocations_living.keys():
@@ -75,33 +80,32 @@ class Dojo(object):
 		if len(living_to_let) > 0 :
 
 			allocate = random.choice(living_to_let)
-			self.allocated.update({allocate : person_name})
+			self.allocated_living.update({person_name : allocate})
 			self.allocations_living[allocate] = self.allocations_living[allocate] + 1
-			print ("living allocated") 
-			print (self.allocated)
+			print ("A living space ",allocate ,"has been allocated to ",person_name,) 
+			
 
 		else:
 			self.unallocated.append(person_name)
 
 
 
-	def addPerson(self,person_name,position,accomodation):
+	def addFellow(self,person_name,accomodation):
 
-		if position == 'staff':
-			#create object of staff
-			self.all_people.append(person_name)
-			new.allocate_office(person_name)
+		self.all_people.append(person_name)
+		#create fellow object
 
-		elif position == 'fellow' and accomodation == 'N' :
-			#create object fellow
-			self.all_people.append(person_name)
-			new.allocate_office(person_name)
+		if accomodation == 'Y':
+			self.allocate_office(person_name)
+			self.allocate_living(person_name)
+		else:
+			self.allocate_office(person_name)
 
-		elif position == 'fellow' and accomodation == 'Y' :
-			#create object fellow
-			self.all_people.append(person_name)
-			new.allocate_office(person_name)
-			new.allocate_living(person_name)
+	def addStaff(self,person_name):
+		self.all_people.append(person_name)
+		#create fellow object
+		self.allocate_office(person_name)
+
 
 	def print_room(self,room_name):
 
@@ -110,31 +114,60 @@ class Dojo(object):
 				print (self.allocated[key])
 
 
-	def print_allocations():
-		pass
+	def print_allocations(self):
+		
+		for key in self.allocated_office.keys():
+			name = key
+			room =self.allocated_office[key]
+			print (room, name)
 
-	def print_unallocated():
-		pass
+		for key in self.allocated_living.keys():
+			name = key
+			room =self.allocated_living[key]
+			print (room, name)
 
-	def print_allocations_to_file():
-		pass
+
+	def print_unallocated(self):
+		
+		print (self.unallocated)
+
+	def print_allocations_to_file(self,filename):
+		target = open(filename , 'w')
+		target.truncate()
+		target.write("Room name\t\t")
+		target.write("Person\n")
+		for key in self.allocated_office.keys():
+			room = self.allocated_office[key]
+			name = key
+			target.write(room)
+			target.write("\t\t\t")
+			target.write(name)
+			target.write("\n")
+		for key in self.allocated_living.keys():
+			room = self.allocated_living[key]
+			name = key
+			target.write(room)
+			target.write("\t\t\t")
+			target.write(name)
+			target.write("\n")
+		
+		target.close()	
+
 
 	def print_unallocations_to_file():
-		pass
-"""
+		target = open(filename , 'w')
+		for name in self.unallocated:
+			target.write(name)
 
-	
-
-
-
+		target.close()
 
 
-"""
+#new = Dojo()
+# new.create_room('office', ['black','blue'])
+# new.create_room('living space', ['amsterdam'])
+# new.addFellow('Akash Baga' ,'Y')
+# new.addStaff("James")
+# new.print_allocations()
+# new.print_allocations_to_file('allocations.txt')
 
-
-new = Dojo()
-new.create_room('office', ['black','blue'])
-new.create_room('living space', ['green'])
-new.addPerson('Akash','fellow','Y')
-new.print_room('green')
 

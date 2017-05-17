@@ -1,0 +1,4 @@
+Room name		Person
+black			Akash Baga
+black			James
+amsterdam			Akash Baga
