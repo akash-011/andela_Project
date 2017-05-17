@@ -1,3 +1,4 @@
 andela_project/*
 .DS_Store
 __pycache__/*
+classes/__pycache__/*
