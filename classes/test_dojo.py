@@ -77,10 +77,6 @@ class TestRoomAdded(unittest.TestCase):
 		self.assertEqual(len(self.new.unallocated),0)
 
 
-	def test_allocated_office_message(self):
-		self.new.create_room('office', ['london'])
-		result = self.new.add_person('Joe Shah','staff','N')
-		self.assertEqual(result ,'An office london has been allocated to Joe Shah') 
 
 
 if __name__ == '__main__':
