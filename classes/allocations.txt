@@ -1,4 +1,4 @@
 Room name		Person
-black			Akash Baga
+blue			Akash Baga
 black			James
 amsterdam			Akash Baga

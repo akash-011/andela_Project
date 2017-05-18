@@ -1,5 +1,6 @@
 import random
-from room import Room,Office
+from room import Room,Office,Living_spaces
+from person import Person,Fellow,Staff
 class Dojo(object):
 
 	def __init__(self):
@@ -26,7 +27,7 @@ class Dojo(object):
 		else:
 			for each in room_list:
 				if each not in self.offices and each not in self.living_spaces:
-					new_room = Office(each)
+					new_room = Living_spaces(each)
 					self.living_spaces.append(each)
 					print ("A Living Space called", each , "has been created")
 				else:
@@ -92,20 +93,31 @@ class Dojo(object):
 
 	def addFellow(self,person_name,accomodation):
 
-		self.all_people.append(person_name)
-		#create fellow object
+		if person_name not in self.all_people:
+			self.all_people.append(person_name)
+			print ("Fellow",person_name,"has been succesfully added !")
+			new_person = Fellow(person_name)
 
-		if accomodation == 'Y':
-			self.allocate_office(person_name)
-			self.allocate_living(person_name)
+			if accomodation == 'Y':
+				self.allocate_office(person_name)
+				self.allocate_living(person_name)
+			else:
+				self.allocate_office(person_name)
 		else:
-			self.allocate_office(person_name)
+			print (person_name, "has already been added")
+
+
 
 	def addStaff(self,person_name):
-		self.all_people.append(person_name)
-		#create fellow object
-		self.allocate_office(person_name)
 
+		if person_name not in self.all_people:
+
+			self.all_people.append(person_name)
+			print("Staff",person_name,"has been succesfully added !")
+			#create fellow object
+			self.allocate_office(person_name)
+		else:
+			print ( person_name,"has already been added")
 
 	def print_room(self,room_name):
 
@@ -162,12 +174,9 @@ class Dojo(object):
 		target.close()
 
 
-#new = Dojo()
-# new.create_room('office', ['black','blue'])
-# new.create_room('living space', ['amsterdam'])
-# new.addFellow('Akash Baga' ,'Y')
-# new.addStaff("James")
-# new.print_allocations()
-# new.print_allocations_to_file('allocations.txt')
+new = Dojo()
+new.create_room('office', ['black','blue'])
+new.addStaff("Akash Baga")
+
 
 

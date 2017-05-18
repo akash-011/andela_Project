@@ -42,6 +42,34 @@ class TestRoomAdded(unittest.TestCase):
 		self.new.addFellow('Akash Baga' , 'Y')
 		self.assertEqual(len(self.new.all_people),1)
 
+	def test_add_staff(self):
+		self.new.addStaff('Akash Baga')
+		self.assertEqual(len(self.new.all_people),1)
+
+	def test_cant_add_same_person_again(self):
+		self.new.addStaff('Akash Baga')
+		self.new.addStaff('Akash Baga')
+		self.assertEqual(len(self.new.all_people),1)
+
+	def test_cant_add_same_staff_again(self):
+		self.new.addStaff('Akash Baga')
+		self.new.addStaff('Akash Baga')
+		self.assertEqual(len(self.new.all_people),1)		
+
+	def test_allocated_office(self):
+		self.new.create_room('office',['jbo'])
+		self.new.addStaff('Joe')
+		self.assertEqual(len(self.new.allocated_office),1)
+
+	def test_allocated_living(self):
+		self.new.create_room('living',['jbo'])
+		self.new.addFellow('Joe', 'Y')
+		self.assertEqual(len(self.new.allocated_living),1)
+
+
+	def test_unallocated_person(self):
+		self.new.addStaff('Joe')
+		self.assertEqual(len(self.new.unallocated),1)
 
 if __name__ == '__main__':
     unittest.main()
