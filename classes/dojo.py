@@ -21,8 +21,8 @@ class Dojo(object):
 				if each not in self.offices and each not in self.living_spaces:
 					new_room = Office(each)
 					self.offices.append(each)
-					messeage = print ("An Office called", each , "has been created")
-					return messeage
+					print ("An Office called", each , "has been created")
+			
 				else:
 					print ("Room name",each ,"already in use")
 		else:
@@ -90,41 +90,35 @@ class Dojo(object):
 		else:
 			self.unallocated.append(person_name)
 
-
-
-	def addFellow(self,person_name,accomodation):
+	def add_person(self,person_name,position,accomodation):
 
 		if person_name not in self.all_people:
 			self.all_people.append(person_name)
-			print ("Fellow",person_name,"has been succesfully added !")
+			print (position,person_name,"has been succesfully added !")
+		else:
+			print (person_name,"has already been added")
+					
+		if position == 'fellow':
 			new_person = Fellow(person_name)
-
 			if accomodation == 'Y':
 				self.allocate_office(person_name)
 				self.allocate_living(person_name)
 			else:
 				self.allocate_office(person_name)
 		else:
-			print (person_name, "has already been added")
-
-
-
-	def addStaff(self,person_name):
-
-		if person_name not in self.all_people:
-
-			self.all_people.append(person_name)
-			print("Staff",person_name,"has been succesfully added !")
-			#create fellow object
+			new_person = Staff(person_name)
 			self.allocate_office(person_name)
-		else:
-			print ( person_name,"has already been added")
+			if accomodation == 'Y':
+				print ("Staff cannot be allocated a living space")			
+
 
 	def print_room(self,room_name):
+		room_print =[]
+		if room_name in self.allocated_office.values():
+			print(list(self.allocated_office.keys()))
 
-		for key in self.allocated.keys():
-			if key == room_name:
-				print (self.allocated[key])
+
+				
 
 
 	def print_allocations(self):
@@ -145,7 +139,7 @@ class Dojo(object):
 		print (self.unallocated)
 
 	def print_allocations_to_file(self,filename):
-		target = open(filename , 'w')
+		target = open(filename , 'w+')
 		target.truncate()
 		target.write("Room name\t\t")
 		target.write("Person\n")
@@ -166,15 +160,14 @@ class Dojo(object):
 		
 		target.close()	
 
-
-	def print_unallocations_to_file():
-		target = open(filename , 'w')
+	def print_unallocations_to_file(self,filename):
+		target = open(filename , 'w+')
 		for name in self.unallocated:
 			target.write(name)
 
 		target.close()
 
 
-new = Dojo()
-new.create_room('office', ['andela'])
+
+
 

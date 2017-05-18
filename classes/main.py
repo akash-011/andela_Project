@@ -8,8 +8,12 @@ interactive command application.
 
 Usage: 
     dojo create_room (office | living) <room name>...
-    dojo add_person <name> (fellow|staff) [<accomodation>]
+    dojo add_person  <first_name> <last_name> (fellow | staff) [--accomodation=(y|n)]
+    dojo print_room <room_name>
+    dojo print_allocated [-o = <filename>] 
+    dojo print_uncallocated [-o = <filename>] 
     dojo (-i | --interactive)
+
 
 Options:
     -i, --interactive  Interactive Mode
@@ -23,7 +27,7 @@ Options:
 import sys
 import cmd
 from docopt import docopt, DocoptExit
-from classes.dojo import Dojo
+from dojo import Dojo
 
 
 new = Dojo()
@@ -72,15 +76,59 @@ class MyInteractive(cmd.Cmd):
         """Usage: create_room (office|living) <room_name>... """ 
                 
         if arg['office'] is True:
-            print ("worked")
+            room_type = 'office'
+        elif arg['living'] is True:
+            room_type = 'living'
 
+        room_list = arg['<room_name>']
+        new.create_room(room_type,room_list)
+
+        
     @docopt_cmd
     def do_add_person(self,arg):
-        """Usage: add_person  <name> (fellow|staff) [<accomodation>] """
+        """Usage: add_person  <first_name> <last_name> (fellow | staff) [--accomodation=(y|n)]"""
+        person_name = arg['<first_name>'] + " "+ arg['<last_name>'] 
 
-        print (arg)
-        if arg['<accomodation>'] is False:
-            print ("it works")
+        if arg['fellow'] == True:
+            position = 'fellow'
+        else:
+            position = 'staff'
+
+        if arg['y'] == True:
+            living = 'Y'
+        else:
+            living = 'N'
+        print(person_name)
+        new.add_person(person_name,position,living)
+
+
+    @docopt_cmd
+    def do_print_room(self,arg):
+        """Usage: print_room <room_name> """
+        room = arg['<room_name>'] 
+        new.print_room(room)
+
+
+    @docopt_cmd
+    def do_print_allocated(self,arg):
+        """Usage: print_allocated [-o = <filename>] """
+       
+        if arg['-o'] is True:
+            filename = arg['<filename>']
+            new.print_allocations_to_file(filename)
+        else:
+            new.print_allocations()      
+ 
+    @docopt_cmd
+    def do_print_unallocated(self,arg):
+        """Usage: print_uncallocated [-o = <filename>] """
+        if arg['-o'] is True:
+            filename = arg['<filename>']
+            new.print_unallocations_to_file(filename)
+        else:
+            new.print_unallocated()
+
+
 
     def do_quit(self, arg):
         """Quits out of Interactive Mode."""

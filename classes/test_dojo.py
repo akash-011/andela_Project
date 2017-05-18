@@ -39,37 +39,49 @@ class TestRoomAdded(unittest.TestCase):
 		self.assertEqual(len(self.new.living_spaces),1)
 
 	def test_add_fellow(self):
-		self.new.addFellow('Akash Baga' , 'Y')
+		self.new.add_person('Akash Baga' ,'fellow','Y')
 		self.assertEqual(len(self.new.all_people),1)
 
 	def test_add_staff(self):
-		self.new.addStaff('Akash Baga')
+		self.new.add_person('Akash Baga','staff','N')
 		self.assertEqual(len(self.new.all_people),1)
 
 	def test_cant_add_same_person_again(self):
-		self.new.addStaff('Akash Baga')
-		self.new.addStaff('Akash Baga')
+		self.new.add_person('Akash Baga','staff','N')
+		self.new.add_person('Akash Baga','staff','N')
 		self.assertEqual(len(self.new.all_people),1)
 
 	def test_cant_add_same_staff_again(self):
-		self.new.addStaff('Akash Baga')
-		self.new.addStaff('Akash Baga')
+		self.new.add_person('Akash Baga','staff','N')
+		self.new.add_person('Akash Baga','staff','N')
 		self.assertEqual(len(self.new.all_people),1)		
 
 	def test_allocated_office(self):
 		self.new.create_room('office',['jbo'])
-		self.new.addStaff('Joe')
+		self.new.add_person('Joe','staff','N')
 		self.assertEqual(len(self.new.allocated_office),1)
 
 	def test_allocated_living(self):
 		self.new.create_room('living',['jbo'])
-		self.new.addFellow('Joe', 'Y')
+		self.new.add_person('Joe','fellow','Y')
 		self.assertEqual(len(self.new.allocated_living),1)
 
 
 	def test_unallocated_person(self):
-		self.new.addStaff('Joe')
+		self.new.add_person('Joe','staff','N')
 		self.assertEqual(len(self.new.unallocated),1)
+
+	def test_empty_unallocated(self):
+		self.new.create_room('office',['jbo'])
+		self.new.add_person('Joe','staff','N')
+		self.assertEqual(len(self.new.unallocated),0)
+
+
+	def test_allocated_office_message(self):
+		self.new.create_room('office', ['london'])
+		result = self.new.add_person('Joe Shah','staff','N')
+		self.assertEqual(result ,'An office london has been allocated to Joe Shah') 
+
 
 if __name__ == '__main__':
     unittest.main()
