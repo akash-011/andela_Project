@@ -1,7 +1,15 @@
-"""
-Usage:
 
-main.py create_room (office | living) <room name>...
+
+
+
+"""
+This example uses docopt with the built in cmd module to demonstrate an
+interactive command application.
+
+Usage: 
+    dojo create_room (office | living) <room name>...
+    dojo add_person <name> (fellow|staff) [<accomodation>]
+    dojo (-i | --interactive)
 
 Options:
     -i, --interactive  Interactive Mode
@@ -52,37 +60,41 @@ def docopt_cmd(func):
 
 
 class MyInteractive(cmd.Cmd):
-	intro = 'Welcome to my interactive program!' \
+    intro = 'Welcome to my interactive program!' \
         + ' (type help for a list of commands.)'
-    prompt = '(my_program) '
+    prompt = '(Dojo) '
     file = None
 
 
     @docopt_cmd
-    def do_create_room(self,arg):
-    	"""
-    	Usage: create_room (office | living) <room name>...
-    	"""
- 		print (arg)
+    
+    def do_create_room(self, arg):
+        """Usage: create_room (office|living) <room_name>... """ 
+                
+        if arg['office'] is True:
+            print ("worked")
 
+    @docopt_cmd
+    def do_add_person(self,arg):
+        """Usage: add_person  <name> (fellow|staff) [<accomodation>] """
 
+        print (arg)
+        if arg['<accomodation>'] is False:
+            print ("it works")
 
+    def do_quit(self, arg):
+        """Quits out of Interactive Mode."""
 
-
-
-
-
-
-
-
-
-
+        print('Good Bye!')
+        exit()
 
 
 opt = docopt(__doc__, sys.argv[1:])
 
 if opt['--interactive']:
     MyInteractive().cmdloop()
+
+print(opt)
 
 
 

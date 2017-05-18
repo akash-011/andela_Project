@@ -1,6 +1,6 @@
 import random
-from room import Room,Office,Living_spaces
-from person import Person,Fellow,Staff
+from room import Room, Office, Living_spaces
+from person import Person, Fellow,Staff
 class Dojo(object):
 
 	def __init__(self):
@@ -21,7 +21,8 @@ class Dojo(object):
 				if each not in self.offices and each not in self.living_spaces:
 					new_room = Office(each)
 					self.offices.append(each)
-					print ("An Office called", each , "has been created")
+					messeage = print ("An Office called", each , "has been created")
+					return messeage
 				else:
 					print ("Room name",each ,"already in use")
 		else:
@@ -174,9 +175,6 @@ class Dojo(object):
 		target.close()
 
 
-# new = Dojo()
-# new.create_room('office', ['black','blue'])
-# new.addStaff("Akash Baga")
-
-
+new = Dojo()
+new.create_room('office', ['andela'])
 
