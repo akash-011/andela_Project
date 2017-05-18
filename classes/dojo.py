@@ -174,9 +174,9 @@ class Dojo(object):
 		target.close()
 
 
-new = Dojo()
-new.create_room('office', ['black','blue'])
-new.addStaff("Akash Baga")
+# new = Dojo()
+# new.create_room('office', ['black','blue'])
+# new.addStaff("Akash Baga")
 
 
 
