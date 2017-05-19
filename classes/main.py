@@ -64,8 +64,11 @@ def docopt_cmd(func):
 
 
 class MyInteractive(cmd.Cmd):
-    intro = 'Welcome to my interactive program!' \
-        + ' (type help for a list of commands.)'
+    def intro():
+        print(__doc__)
+
+
+    intro = intro()
     prompt = '(Dojo) '
     file = None
 
