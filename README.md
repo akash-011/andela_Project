@@ -22,7 +22,8 @@ and for interactive mode run as follows:
 
     python3 main.py -i
 
-
+## Asciicast Demo
+see[assicast] https://asciinema.org/a/1l2ks6rn2is77nbe2v7tjsvus
 
 ----
 
