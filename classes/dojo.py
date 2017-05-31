@@ -155,12 +155,8 @@ class Dojo(object):
         target = open(filename, 'w+')
         for name in self.unallocated:
             target.write(name)
+            target.write("\n")
 
         target.close()
 
 
-new = Dojo()
-new.create_room('office',['London','x'])
-new.add_person('james sa','fellow','Y')
-new.print_allocations()
-new.print_unallocated()

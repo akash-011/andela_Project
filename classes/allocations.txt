@@ -1,4 +1,0 @@
-Room name		Person
-blue			Akash Baga
-black			James
-amsterdam			Akash Baga
