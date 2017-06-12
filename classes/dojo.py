@@ -153,6 +153,7 @@ class Dojo(object):
 
     def print_unallocations_to_file(self, filename):
         target = open(filename, 'w+')
+        target.truncate()
         for name in self.unallocated:
             target.write(name)
             target.write("\n")
@@ -160,3 +161,22 @@ class Dojo(object):
         target.close()
 
 
+    def load_people(self, file):
+        '''this function reads a lists of people and allocates them a room'''
+        with open(file, 'r') as file:
+
+            file_content = file.readlines()
+
+            for line in file_content:
+                information = line.split()
+                first_name = information[0]
+                second_name = information[1]
+                name = first_name + ' ' + second_name
+                person_role = information[2].lower()
+
+                try:
+                    staying = information[3]
+
+                except:
+                    staying = 'N'
+                self.add_person(name, person_role, staying)
