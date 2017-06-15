@@ -4,6 +4,3 @@ __pycache__/*
 classes/__pycache__/*
 *.pyc
 project/*
-classes/allocations.txt
-classes/uncallocated.txt
-
