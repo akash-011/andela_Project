@@ -84,10 +84,15 @@ class Dojo(object):
             if accomodation == 'Y':
                 print("Staff cannot be allocated a living space")
 
+    # def print_room(self, room_name):
+    #     room_print = []
+    #     if room_name in self.allocated_office.values():
+    #         print(list(self.allocated_office.keys()))
     def print_room(self, room_name):
-        room_print = []
-        if room_name in self.allocated_office.values():
-            print(list(self.allocated_office.keys()))
+
+        for name in room_name.occupants:
+            print name
+
 
     def print_allocations(self):
 
