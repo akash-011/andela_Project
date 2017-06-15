@@ -9,8 +9,8 @@ class Dojo(object):
         self.offices = []  # list of all create offices
         self.living_spaces = []  # list of all created living
         self.unoccupied_living = []
-        self.allocations_offices = {}  # offices with no. of occupants
-        self.allocations_living = {}  # living with no. occupants
+        self.allocations_offices = []  # offices with no. of occupants
+        self.allocations_living = []  # living with no. occupants
         self.allocated_office = {}  # stores allocated people with coreesponding room
         self.allocated_living = {}  # stores allocated people with coreesponding room
         self.all_people = []
@@ -22,7 +22,7 @@ class Dojo(object):
             for each in room_list:
                 if each not in self.offices and each not in self.living_spaces:
                     new_room = Office(each)
-                    self.offices.append(each)
+                    self.offices.append(new_room)
                     print("An Office called", each, "has been created")
 
                 else:
@@ -31,72 +31,94 @@ class Dojo(object):
             for each in room_list:
                 if each not in self.offices and each not in self.living_spaces:
                     new_room = Living_spaces(each)
-                    self.living_spaces.append(each)
+                    self.living_spaces.append(new_room)
                     print("A Living Space called", each, "has been created")
                 else:
                     print("Room name", each, "already in use")
 
+    # def update_room(self):
+    #
+    #     for room in self.offices:
+    #         if room not in self.allocations_offices:
+    #             self.allocations_offices.update({room: 0})
+    #
+    #     for room in self.living_spaces:
+    #         if room not in self.allocations_living:
+    #             self.allocations_living.update({room: 0})
+
     def update_room(self):
 
         for room in self.offices:
-            if room not in self.allocations_offices:
-                self.allocations_offices.update({room: 0})
+            if len(room.occupants) < 7:
+                self.allocations_offices.append(room)
 
-        for room in self.living_spaces:
-            if room not in self.allocations_living:
-                self.allocations_living.update({room: 0})
+        for room in self.offices:
+            if len(room.occupants) < 5:
+                self.allocations_living.append(room)
+
+    # def allocate_office(self, person_name):
+    #
+    #     self.update_room()
+    #     offices_to_let = []
+    #
+    #     for each_room in self.allocations_offices.keys():
+    #         if self.allocations_offices[each_room] < 7:
+    #             offices_to_let.append(each_room)
+    #
+    #     if len(offices_to_let) > 0:
+    #
+    #         allocate = random.choice(offices_to_let)
+    #         self.allocated_office.update({person_name: allocate})
+    #         self.allocations_offices[
+    #             allocate] = self.allocations_offices[allocate] + 1
+    #         print("An office", allocate, "has been allocated to", person_name,)
+    #
+    #     else:
+    #         self.unallocated.append(person_name)
 
     def allocate_office(self, person_name):
 
         self.update_room()
-        offices_to_let = []
+        allocate = random.choice(self.allocations_offices)
+        allocate.occupants.append(person_name)
+        print("An office", allocate, "has been allocated to", person_name,)
 
-        for each_room in self.allocations_offices.keys():
-            if self.allocations_offices[each_room] < 7:
-                offices_to_let.append(each_room)
 
-        if len(offices_to_let) > 0:
+    # def allocate_living(self, person_name):
+    #
+    #     self.update_room()
+    #     living_to_let = []
+    #
+    #     for each_room in self.allocations_living.keys():
+    #         if self.allocations_living[each_room] < 5:
+    #             living_to_let.append(each_room)
+    #
+    #     if len(living_to_let) > 0:
+    #
+    #         allocate = random.choice(living_to_let)
+    #         self.allocated_living.update({person_name: allocate})
+    #         self.allocations_living[
+    #             allocate] = self.allocations_living[allocate] + 1
+    #         print("A living space ", allocate,
+    #               "has been allocated to ", person_name,)
+    #
+    #     else:
+    #         self.unallocated.append(person_name)
 
-            allocate = random.choice(offices_to_let)
-            self.allocated_office.update({person_name: allocate})
-            self.allocations_offices[
-                allocate] = self.allocations_offices[allocate] + 1
-            print("An office", allocate, "has been allocated to", person_name,)
+    #def allocations_living(self, person_name):
 
-        else:
-            self.unallocated.append(person_name)
 
-    def allocate_living(self, person_name):
-
-        self.update_room()
-        living_to_let = []
-
-        for each_room in self.allocations_living.keys():
-            if self.allocations_living[each_room] < 5:
-                living_to_let.append(each_room)
-
-        if len(living_to_let) > 0:
-
-            allocate = random.choice(living_to_let)
-            self.allocated_living.update({person_name: allocate})
-            self.allocations_living[
-                allocate] = self.allocations_living[allocate] + 1
-            print("A living space ", allocate,
-                  "has been allocated to ", person_name,)
-
-        else:
-            self.unallocated.append(person_name)
 
     def add_person(self, person_name, position, accomodation):
 
         if person_name not in self.all_people:
-            self.all_people.append(person_name)
             print(position, person_name, "has been succesfully added !")
         else:
             print(person_name, "has already been added")
 
         if position == 'fellow':
             new_person = Fellow(person_name)
+            self.all_people.append(new_person)
             if accomodation == 'Y':
                 self.allocate_office(person_name)
                 self.allocate_living(person_name)
@@ -104,6 +126,7 @@ class Dojo(object):
                 self.allocate_office(person_name)
         else:
             new_person = Staff(person_name)
+            self.all_people.append(new_person)
             self.allocate_office(person_name)
             if accomodation == 'Y':
                 print("Staff cannot be allocated a living space")
@@ -180,3 +203,8 @@ class Dojo(object):
                 except:
                     staying = 'N'
                 self.add_person(name, person_role, staying)
+
+
+new = Dojo()
+new.create_room('office', ['nai','lnd'])
+new.add_person('Wayne Rooney','staff','N')
