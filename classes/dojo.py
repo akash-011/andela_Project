@@ -8,10 +8,8 @@ class Dojo(object):
     def __init__(self):
         self.offices = []  # list of all create offices
         self.living_spaces = []  # list of all created living
-        self.unoccupied_living = []
         self.allocations_offices = []  # offices with no. of occupants
         self.allocations_living = []  # living with no. occupants
-        self.allocated_living = {}  # stores allocated people with coreesponding room
         self.all_people = []
         self.unallocated = []
 
@@ -161,3 +159,9 @@ class Dojo(object):
                 except:
                     staying = 'N'
                 self.add_person(name, person_role, staying)
+
+
+new = Dojo()
+new.create_room('office','lnd')
+new.add_person('Akash','staff','N')
+new.print_room('lnd') 

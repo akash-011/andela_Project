@@ -2,6 +2,7 @@ class Person(object):
 
 	def __init__(self,name):
 		self.name = name
+		self.office = None
 
 class Fellow(Person):
 	def __init__(self,name):
@@ -10,6 +11,4 @@ class Fellow(Person):
 class Staff(Person):
 	def __init__(self,name):
 		super(Staff,self).__init__(name)
-
-
-
+		self.living = None
