@@ -47,17 +47,25 @@ class Dojo(object):
     def allocate_office(self, person_name):
 
         self.update_room()
-        allocate = random.choice(self.allocations_offices)
-        allocate.occupants.append(person_name)
-        print("An office", allocate, "has been allocated to", person_name,)
+
+        if len(self.offices) > 0:
+            allocate = random.choice(self.allocations_offices)
+            allocate.occupants.append(person_name)
+            print("An office", allocate.name, "has been allocated to", person_name,)
+        else:
+            self.unallocated.append(person_name)
+            print("No offices to allocate")
 
 
     def allocate_living(self, person_name):
-        self.update_room()
-        allocate = random.choice(self.allocations_living)
-        allocate.occupants.append(person_name)
-        print("A living space ", allocate, "has been allocated to ", person_name,)
-
+        if len(self.living_spaces) > 0:
+            self.update_room()
+            allocate = random.choice(self.allocations_living)
+            allocate.occupants.append(person_name)
+            print("A living space ", allocate.name, "has been allocated to ", person_name,)
+        else:
+            self.unallocated.append(person_name)
+            print ("No living space to allocate")
 
 
     def add_person(self, person_name, position, accomodation):
@@ -82,27 +90,20 @@ class Dojo(object):
             if accomodation == 'Y':
                 print("Staff cannot be allocated a living space")
 
-    # def print_room(self, room_name):
-    #     room_print = []
-    #     if room_name in self.allocated_office.values():
-    #         print(list(self.allocated_office.keys()))
     def print_room(self, room_name):
 
-        for name in room_name.occupants:
-            print name
-
+        for room in self.offices or self.living_spaces:
+            if room_name == room.name:
+                for person in room.occupants:
+                    print (person)
 
     def print_allocations(self):
 
-        for key in self.allocated_office.keys():
-            name = key
-            room = self.allocated_office[key]
-            print(room, name)
+        for room in self.offices:
+            print (room.name)
+            for member in room.occupants:
+                print (member)
 
-        for key in self.allocated_living.keys():
-            name = key
-            room = self.allocated_living[key]
-            print(room, name)
 
     def print_unallocated(self):
 
@@ -162,6 +163,8 @@ class Dojo(object):
 
 
 new = Dojo()
-new.create_room('office','lnd')
-new.add_person('Akash','staff','N')
-new.print_room('lnd') 
+new.create_room('office',['lnd'])
+new.add_person('Akash','fellow','Y')
+new.print_room('lnd')
+new.print_unallocated()
+new.print_allocations()
