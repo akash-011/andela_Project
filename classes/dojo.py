@@ -104,30 +104,32 @@ class Dojo(object):
             for member in room.occupants:
                 print (member)
 
+        for room in self.living_spaces:
+            print (room.name)
+            for member in room.occupants:
+                print (member)
 
     def print_unallocated(self):
 
         print(self.unallocated)
 
     def print_allocations_to_file(self, filename):
-        target = open(filename, 'w+')
+        target = open(filename,'w+')
         target.truncate()
-        target.write("Room name\t\t")
-        target.write("Person\n")
-        for key in self.allocated_office.keys():
-            room = self.allocated_office[key]
-            name = key
-            target.write(room)
-            target.write("\t\t\t")
-            target.write(name)
+
+        for room in self.offices:
+            target.write(room.name)
             target.write("\n")
-        for key in self.allocated_living.keys():
-            room = self.allocated_living[key]
-            name = key
-            target.write(room)
-            target.write("\t\t\t")
-            target.write(name)
+            for member in room.occupants:
+                target.write(member)
+                target.write("\n")
+
+        for room in self.living_spaces:
+            target.write(room.name)
             target.write("\n")
+            for member in room.occupants:
+                target.write(member)
+                target.write("\n")
 
         target.close()
 
@@ -142,7 +144,6 @@ class Dojo(object):
 
 
     def load_people(self, file):
-        '''this function reads a lists of people and allocates them a room'''
         with open(file, 'r') as file:
 
             file_content = file.readlines()
