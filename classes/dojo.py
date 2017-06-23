@@ -1,7 +1,10 @@
 import random
 from room import Room, Office, Living_spaces
 from person import Person, Fellow, Staff
-
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from models import Base
+from models import People, Rooms
 
 class Dojo(object):
 
@@ -11,7 +14,9 @@ class Dojo(object):
         self.allocations_offices = []  # offices with no. of occupants
         self.allocations_living = []  # living with no. occupants
         self.all_people = []
-        self.unallocated = []
+        self.unallocated_office = []
+        self.unallocated_living = []
+
 
     def create_room(self, room_type, room_list):
 
@@ -58,7 +63,7 @@ class Dojo(object):
             name_person.office = allocate
             print("An office", allocate.name, "has been allocated to", name_person.name,)
         else:
-            self.unallocated.append(name_person)
+            self.unallocated_office.append(name_person)
             print("No offices to allocate")
 
 
@@ -77,7 +82,7 @@ class Dojo(object):
             name_person.living = allocate
             print("A living space ", allocate.name, "has been allocated to ", name_person.name,)
         else:
-            self.unallocated.append(person_name)
+            self.unallocated_living.append(person_name)
             print ("No living space to allocate")
 
 
@@ -124,7 +129,9 @@ class Dojo(object):
 
     def print_unallocated(self):
 
-        print(self.unallocated)
+        print(self.unallocated_office)
+        print(self.unallocated_living)
+
 
     def print_allocations_to_file(self, filename):
         target = open(filename,'w+')
@@ -149,7 +156,11 @@ class Dojo(object):
     def print_unallocations_to_file(self, filename):
         target = open(filename, 'w+')
         target.truncate()
-        for name in self.unallocated:
+        for name in self.unallocated_living:
+            target.write(name)
+            target.write("\n")
+
+        for name in self.unallocated_office:
             target.write(name)
             target.write("\n")
 
@@ -198,3 +209,88 @@ class Dojo(object):
                 except:
                     staying = 'N'
                 self.add_person(name, person_role, staying)
+
+    def save_state(self, db='dojo_db'):
+
+        if db:
+            engine = create_engine('sqlite:///%s' % db)
+        else:
+            engine = create_engine('sqlite:///dojo_db')
+
+        Session = sessionmaker()
+        Session.configure(bind=engine)
+        Base.metadata.create_all(engine)
+
+        Base.metadata.bind = engine
+        session = Session()
+
+        for person in self.all_people:
+            new_person = People()
+            new_person.name = person.name
+            if isinstance(person,Staff):
+                new_person.role = 'staff'
+            elif isinstance(person,Fellow):
+                new_person.role = 'fellow'
+            if person.office is None:
+                new_person.office = "No Office"
+            else:
+                new_person.office = person.office.name
+            if person.living is None:
+                new_person.living = "No living"
+            else:
+                new_person.living = person.living.name
+            for unallocated_person in self.unallocated_office:
+                if unallocated_person == new_person.name:
+                    new_person.unallocated = 'office'
+            for unallocated_person in self.unallocated_living:
+                if unallocated_person == new_person.name:
+                    new_person.unallocated = 'living'
+
+
+            session.merge(new_person)
+            session.commit()
+
+        for room in self.offices:
+            new_room = Rooms()
+            new_room.room_name = room.name
+            new_room.category = "office"
+            session.merge(new_room)
+            session.commit()
+
+        for room in self.living_spaces:
+            new_room = Rooms()
+            new_room.room_name = room.name
+            new_room.category = "living"
+            session.merge(new_room)
+            session.commit()
+
+        print ("Data saved ")
+
+    def load_state(self, db='dojo_db'):
+
+        engine = create_engine('sqlite:///dojo_db')
+        Session = sessionmaker(bind=engine)
+        session = Session()
+        everyone = session.query(People).all()
+        all_rooms = session.query(Rooms).all()
+
+        for room in all_rooms:
+            room_name = room.name
+            if room.category == 'office':
+                office_object = Office(room_name)
+                self.offices.append(office_object)
+            elif room.category == 'living':
+                living_object = Living_spaces(room_name)
+                self.living_spaces.append(living_object)
+            session.merge()
+            session.commit()
+
+        for people in everyone:
+            person_name = people.name
+
+
+new = Dojo()
+
+new.create_room('office',['lnd','nbi'])
+new.add_person("Akash",'fellow','Y')
+new.save_state()
