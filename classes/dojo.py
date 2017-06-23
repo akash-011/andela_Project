@@ -96,7 +96,7 @@ class Dojo(object):
                 self.allocate_living(person_name)
             else:
                 self.allocate_office(person_name)
-        else:
+        elif position == 'staff':
             new_person = Staff(person_name)
             self.all_people.append(new_person)
             self.allocate_office(person_name)
@@ -172,7 +172,7 @@ class Dojo(object):
             old_room.occupants.remove(people)
             room_new.occupants.append(people)
             print(people.name ,"has been realloated to", room_new.name)
-        
+
 
         if isinstance(room_new, Living_spaces):
             old_room = people.living
@@ -193,15 +193,8 @@ class Dojo(object):
                 person_role = information[2].lower()
 
                 try:
-                    staying = information[3]
+                    staying = information[3].upper()
 
                 except:
                     staying = 'N'
                 self.add_person(name, person_role, staying)
-
-
-new = Dojo()
-new.create_room('office',['lnd','nbi'])
-new.create_room('living',['tsavo'])
-new.add_person('Akash','fellow','Y')
-new.reallocate_person('Akash','lnd')
