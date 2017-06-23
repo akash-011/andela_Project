@@ -1,17 +1,14 @@
 
-
-
-
 """
 This example uses docopt with the built in cmd module to demonstrate an
 interactive command application.
 
-Usage: 
+Usage:
     dojo create_room (office | living) <room name>...
     dojo add_person  <first_name> <last_name> (fellow | staff) [--accomodation=(y|n)]
     dojo print_room <room_name>
-    dojo print_allocated [-o = <filename>] 
-    dojo print_uncallocated [-o = <filename>] 
+    dojo print_allocated [-o = <filename>]
+    dojo print_uncallocated [-o = <filename>]
     dojo (-i | --interactive)
 
 
@@ -74,10 +71,10 @@ class MyInteractive(cmd.Cmd):
 
 
     @docopt_cmd
-    
+
     def do_create_room(self, arg):
-        """Usage: create_room (office|living) <room_name>... """ 
-                
+        """Usage: create_room (office|living) <room_name>... """
+
         if arg['office'] is True:
             room_type = 'office'
         elif arg['living'] is True:
@@ -86,11 +83,11 @@ class MyInteractive(cmd.Cmd):
         room_list = arg['<room_name>']
         new.create_room(room_type,room_list)
 
-        
+
     @docopt_cmd
     def do_add_person(self,arg):
         """Usage: add_person  <first_name> <last_name> (fellow | staff) [--accomodation=(y|n)]"""
-        person_name = arg['<first_name>'] + " "+ arg['<last_name>'] 
+        person_name = arg['<first_name>'] + " "+ arg['<last_name>']
 
         if arg['fellow'] == True:
             position = 'fellow'
@@ -101,27 +98,26 @@ class MyInteractive(cmd.Cmd):
             living = 'Y'
         else:
             living = 'N'
-        print(person_name)
         new.add_person(person_name,position,living)
 
 
     @docopt_cmd
     def do_print_room(self,arg):
         """Usage: print_room <room_name> """
-        room = arg['<room_name>'] 
+        room = arg['<room_name>']
         new.print_room(room)
 
 
     @docopt_cmd
     def do_print_allocated(self,arg):
         """Usage: print_allocated [-o = <filename>] """
-       
+
         if arg['-o'] is True:
             filename = arg['<filename>']
             new.print_allocations_to_file(filename)
         else:
-            new.print_allocations()      
- 
+            new.print_allocations()
+
     @docopt_cmd
     def do_print_unallocated(self,arg):
         """Usage: print_uncallocated [-o = <filename>] """
@@ -146,6 +142,3 @@ if opt['--interactive']:
     MyInteractive().cmdloop()
 
 print(opt)
-
-
-
