@@ -20,7 +20,7 @@ class Dojo(object):
                 if each not in self.offices and each not in self.living_spaces:
                     new_room = Office(each)
                     self.offices.append(new_room)
-                    print("An Office called", each, "has been created")
+                    print("An Office called", new_room.name, "has been created")
 
                 else:
                     print("Room name", each, "already in use")
@@ -29,7 +29,7 @@ class Dojo(object):
                 if each not in self.offices and each not in self.living_spaces:
                     new_room = Living_spaces(each)
                     self.living_spaces.append(new_room)
-                    print("A Living Space called", each, "has been created")
+                    print("A Living Space called", new_room.name, "has been created")
                 else:
                     print("Room name", each, "already in use")
 
@@ -48,21 +48,34 @@ class Dojo(object):
 
         self.update_room()
 
+        for person in self.all_people:
+            if person_name == person.name:
+                name_person = person
+
         if len(self.offices) > 0:
             allocate = random.choice(self.allocations_offices)
-            allocate.occupants.append(person_name)
-            print("An office", allocate.name, "has been allocated to", person_name,)
+            allocate.occupants.append(name_person)
+            name_person.office = allocate
+            print("An office", allocate.name, "has been allocated to", name_person.name,)
         else:
-            self.unallocated.append(person_name)
+            self.unallocated.append(name_person)
             print("No offices to allocate")
 
 
     def allocate_living(self, person_name):
+
+        self.update_room()
+
+        for person in self.all_people:
+            if person_name == person.name:
+                name_person = person
+
+
         if len(self.living_spaces) > 0:
-            self.update_room()
             allocate = random.choice(self.allocations_living)
-            allocate.occupants.append(person_name)
-            print("A living space ", allocate.name, "has been allocated to ", person_name,)
+            allocate.occupants.append(name_person)
+            name_person.living = allocate
+            print("A living space ", allocate.name, "has been allocated to ", name_person.name,)
         else:
             self.unallocated.append(person_name)
             print ("No living space to allocate")
@@ -143,6 +156,30 @@ class Dojo(object):
         target.close()
 
 
+    def reallocate_person(self, person_name, new_room):
+
+        for person in self.all_people:
+            if person_name == person.name:
+                people = person
+
+        for room in self.offices or self.living_spaces:
+            if new_room == room.name:
+                room_new = room
+
+        if isinstance (room_new, Office):
+
+            old_room = people.office
+            old_room.occupants.remove(people)
+            room_new.occupants.append(people)
+            print(people.name ,"has been realloated to", room_new.name)
+        
+
+        if isinstance(room_new, Living_spaces):
+            old_room = people.living
+            old_room.occupants.remove(people)
+            room_new.occupants.append(people)
+
+
     def load_people(self, file):
         with open(file, 'r') as file:
 
@@ -164,8 +201,7 @@ class Dojo(object):
 
 
 new = Dojo()
-new.create_room('office',['lnd'])
+new.create_room('office',['lnd','nbi'])
+new.create_room('living',['tsavo'])
 new.add_person('Akash','fellow','Y')
-new.print_room('lnd')
-new.print_unallocated()
-new.print_allocations()
+new.reallocate_person('Akash','lnd')
