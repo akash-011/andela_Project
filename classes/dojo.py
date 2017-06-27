@@ -57,7 +57,7 @@ class Dojo(object):
             if person_name == person.name:
                 name_person = person
 
-        if len(self.offices) > 0:
+        if len(self.allocations_offices) > 0:
             allocate = random.choice(self.allocations_offices)
             allocate.occupants.append(name_person)
             name_person.office = allocate
@@ -76,7 +76,7 @@ class Dojo(object):
                 name_person = person
 
 
-        if len(self.living_spaces) > 0:
+        if len(self.allocations_living) > 0:
             allocate = random.choice(self.allocations_living)
             allocate.occupants.append(name_person)
             name_person.living = allocate
@@ -229,16 +229,18 @@ class Dojo(object):
             new_person.name = person.name
             if isinstance(person,Staff):
                 new_person.role = 'staff'
+                if person.office is None:
+                    new_person.office = None
             elif isinstance(person,Fellow):
                 new_person.role = 'fellow'
-            if person.office is None:
-                new_person.office = "No Office"
-            else:
-                new_person.office = person.office.name
-            if person.living is None:
-                new_person.living = "No living"
-            else:
-                new_person.living = person.living.name
+                if person.office is None:
+                    new_person.office = None
+                else:
+                    new_person.office = person.office.name
+                if person.living is None:
+                    new_person.living = None
+                else:
+                    new_person.living = person.living.name
             for unallocated_person in self.unallocated_office:
                 if unallocated_person == new_person.name:
                     new_person.unallocated = 'office'
@@ -275,22 +277,59 @@ class Dojo(object):
         all_rooms = session.query(Rooms).all()
 
         for room in all_rooms:
-            room_name = room.name
+            room_name = room.room_name
             if room.category == 'office':
                 office_object = Office(room_name)
                 self.offices.append(office_object)
             elif room.category == 'living':
                 living_object = Living_spaces(room_name)
                 self.living_spaces.append(living_object)
-            session.merge()
-            session.commit()
 
         for people in everyone:
             person_name = people.name
+            office = people.office
+            living = people.living
+            if people.role == 'staff':
+                person_object = Staff(person_name)
+                self.all_people.append(person_object)
+                if office == None:
+                    person_object.office = None
+                else:
+                    person_object.office = office
+                    for room in self.offices:
+                        if office == room.name:
+                            person_office = room
+                    person_office.occupants.append(person_object)
+            if people.role == 'fellow':
+                person_object = Fellow(person_name)
+                self.all_people.append(person_object)
+                if office == None:
+                    person_object.office = None
+                else:
+                    person_object.office = office
+                    for room in self.offices:
+                        if office == room.name:
+                            person_office = room
+                    person_office.occupants.append(person_object)
+                if living == None:
+                    person_object.living = None
+                else:
+                    person_object.living = living
+                    for room in self.living_spaces:
+                        if hostel == room.name:
+                            person_hostel = room
+                    person_hostel.occupants.append(person_object)
+                if people.unallocated == 'office':
+                    self.unallocated_office.append(person_object)
+                elif people.unallocated == 'living':
+                    self.unallocated_living.append(person_object)
+
+
+
 
 
 new = Dojo()
 
-new.create_room('office',['lnd','nbi'])
-new.add_person("Akash",'fellow','Y')
-new.save_state()
+
+new.load_state()
+new.add_person("Alex","staff",'N')

@@ -1,7 +1,6 @@
 
 """
-This example uses docopt with the built in cmd module to demonstrate an
-interactive command application.
+This uses docopt to build a command line interface for the Dojo room allocater system
 
 Usage:
     dojo create_room (office | living) <room name>...
@@ -9,6 +8,7 @@ Usage:
     dojo print_room <room_name>
     dojo print_allocated [-o = <filename>]
     dojo print_uncallocated [-o = <filename>]
+    dojo reallocate_person <first_name> <last_name>
     dojo (-i | --interactive)
 
 
@@ -126,6 +126,15 @@ class MyInteractive(cmd.Cmd):
             new.print_unallocations_to_file(filename)
         else:
             new.print_unallocated()
+
+
+    @docopt_cmd
+    def do_reallocate_person(sefl,arg)
+    """Usage: reallocate_person <first_name> <last_name> """
+        name = arg['<first_name>'] + " "+ arg['<last_name>']
+        new.reallocate_person(name)
+
+    
 
 
 
