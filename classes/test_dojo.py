@@ -1,8 +1,8 @@
-import unittest 
+import unittest
 from dojo import Dojo
 
 
-class TestRoomAdded(unittest.TestCase):
+class TestDojo(unittest.TestCase):
 
 	def setUp(self):
 		self.new = Dojo()
@@ -54,32 +54,34 @@ class TestRoomAdded(unittest.TestCase):
 	def test_cant_add_same_staff_again(self):
 		self.new.add_person('Akash Baga','staff','N')
 		self.new.add_person('Akash Baga','staff','N')
-		self.assertEqual(len(self.new.all_people),1)		
+		self.assertEqual(len(self.new.all_people),1)
 
 	def test_allocated_office(self):
 		self.new.create_room('office',['jbo'])
 		self.new.add_person('Joe','staff','N')
-		self.assertEqual(len(self.new.allocated_office),1)
+		members = self.new.offices[0].occupants
+		self.assertEqual(len(members),1)
 
 	def test_allocated_living(self):
 		self.new.create_room('living',['jbo'])
 		self.new.add_person('Joe','fellow','Y')
-		self.assertEqual(len(self.new.allocated_living),1)
+		members = self.new.living_spaces[0].occupants
+		self.assertEqual(len(members),1)
 
 
 	def test_unallocated_person(self):
 		self.new.add_person('Joe','staff','N')
-		self.assertEqual(len(self.new.unallocated),1)
+		self.assertEqual(len(self.new.unallocated_office),1)
 
-	def test_empty_unallocated(self):
+	def test_unallocated_no_unallocated_person(self):
 		self.new.create_room('office',['jbo'])
 		self.new.add_person('Joe','staff','N')
-		self.assertEqual(len(self.new.unallocated),0)
+		self.assertEqual(len(self.new.unallocated_office),0)
+
+    
 
 
 
 
 if __name__ == '__main__':
-    unittest.main()
-
-
+	unittest.main()

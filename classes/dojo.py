@@ -20,9 +20,16 @@ class Dojo(object):
 
     def create_room(self, room_type, room_list):
 
+        found = False
         if room_type == 'office':
             for each in room_list:
-                if each not in self.offices and each not in self.living_spaces:
+                for each_object in self.offices + self.living_spaces:
+                    if each_object.name == each:
+                        found = True
+                    else:
+                        found = False
+
+                if found == False:
                     new_room = Office(each)
                     self.offices.append(new_room)
                     print("An Office called", new_room.name, "has been created")
@@ -31,7 +38,13 @@ class Dojo(object):
                     print("Room name", each, "already in use")
         else:
             for each in room_list:
-                if each not in self.offices and each not in self.living_spaces:
+                for each_object in self.offices + self.living_spaces:
+                    if each_object.name == each:
+                        found = True
+                    else:
+                        found = False
+
+                if found == False:
                     new_room = Living_spaces(each)
                     self.living_spaces.append(new_room)
                     print("A Living Space called", new_room.name, "has been created")
@@ -87,46 +100,58 @@ class Dojo(object):
 
 
     def add_person(self, person_name, position, accomodation):
+        found = False
+        for person in self.all_people:
+            if person.name == person_name:
+                found = True
 
-        if person_name not in self.all_people:
-            print(position, person_name, "has been succesfully added !")
+            else:
+                found = False
+
+        if found == False:
+            if position == 'fellow':
+                new_person = Fellow(person_name)
+                print ("Person Added")
+                self.all_people.append(new_person)
+                if accomodation == 'Y':
+                    self.allocate_office(person_name)
+                    self.allocate_living(person_name)
+                else:
+                    self.allocate_office(person_name)
+            elif position == 'staff':
+                new_person = Staff(person_name)
+                self.all_people.append(new_person)
+                self.allocate_office(person_name)
+                if accomodation == 'Y':
+                    print("Staff cannot be allocated a living space")
+
         else:
             print(person_name, "has already been added")
-
-        if position == 'fellow':
-            new_person = Fellow(person_name)
-            self.all_people.append(new_person)
-            if accomodation == 'Y':
-                self.allocate_office(person_name)
-                self.allocate_living(person_name)
-            else:
-                self.allocate_office(person_name)
-        elif position == 'staff':
-            new_person = Staff(person_name)
-            self.all_people.append(new_person)
-            self.allocate_office(person_name)
-            if accomodation == 'Y':
-                print("Staff cannot be allocated a living space")
 
     def print_room(self, room_name):
 
         for room in self.offices or self.living_spaces:
             if room_name == room.name:
                 for person in room.occupants:
-                    print (person)
+                    print (person.name)
 
     def print_allocations(self):
 
         for room in self.offices:
             print (room.name)
-            for member in room.occupants:
-                print (member)
+            if len(room.occupants) > 0:
+                for member in room.occupants:
+                    print (member.name)
+            else:
+                print ("Room Empty")
 
         for room in self.living_spaces:
             print (room.name)
-            for member in room.occupants:
-                print (member)
-
+            if len(room.occupants) > 0:
+                for member in room.occupants:
+                    print (member.name)
+            else:
+                print ("Room Empty")
     def print_unallocated(self):
 
         print(self.unallocated_office)
@@ -140,16 +165,22 @@ class Dojo(object):
         for room in self.offices:
             target.write(room.name)
             target.write("\n")
-            for member in room.occupants:
-                target.write(member)
-                target.write("\n")
+            if len(room.occupants) > 0:
+                for member in room.occupants:
+                    target.write(member.name)
+                    target.write("\n")
+            else:
+                target.write("No Occupants")
 
         for room in self.living_spaces:
             target.write(room.name)
             target.write("\n")
-            for member in room.occupants:
-                target.write(member)
-                target.write("\n")
+            if len(room.occupants) > 0:
+                for member in room.occupants:
+                    target.write(member.name)
+                    target.write("\n")
+            else:
+                print("No Occupants")
 
         target.close()
 
@@ -168,28 +199,37 @@ class Dojo(object):
 
 
     def reallocate_person(self, person_name, new_room):
+        found_person = True
+        found_room = True
+        all_rooms = self.offices + self.living_spaces
 
         for person in self.all_people:
             if person_name == person.name:
-                people = person
+                r_name = person
+                found_person = True
 
-        for room in self.offices or self.living_spaces:
-            if new_room == room.name:
-                room_new = room
+        for each_object in all_rooms:
+            if new_room == each_object.name:
+                new_room = each_object
+                found_room = True
 
-        if isinstance (room_new, Office):
+        if found_room is True and found_person is True:
+            if r_name.name in self.unallocated_office or self.unallocated_living:
+                    print ("Unallocated Person cannot be reallocated")
+            else:
+                if isinstance(new_room, Office):
 
-            old_room = people.office
-            old_room.occupants.remove(people)
-            room_new.occupants.append(people)
-            print(people.name ,"has been realloated to", room_new.name)
+                    r_name.office.occupants.remove(r_name)
+                    new_room.occupants.append(r_name)
+                    print(r_name.name ,"has been realloated to", new_room.name)
 
 
-        if isinstance(room_new, Living_spaces):
-            old_room = people.living
-            old_room.occupants.remove(people)
-            room_new.occupants.append(people)
-
+                if isinstance(new_room, Living_spaces):
+                    r_name.living.occupants.remove(r_name)
+                    new_room.occupants.append(r_name)
+                    print(r_name.name ,"has been realloated to", new_room.name)
+        else:
+            print("Person or Room not found ")
 
     def load_people(self, file):
         with open(file, 'r') as file:
@@ -210,12 +250,10 @@ class Dojo(object):
                     staying = 'N'
                 self.add_person(name, person_role, staying)
 
-    def save_state(self, db='dojo_db'):
+    def save_state(self, db):
 
-        if db:
-            engine = create_engine('sqlite:///%s' % db)
-        else:
-            engine = create_engine('sqlite:///dojo_db')
+
+        engine = create_engine('sqlite:///%s' % db)
 
         Session = sessionmaker()
         Session.configure(bind=engine)
@@ -231,6 +269,8 @@ class Dojo(object):
                 new_person.role = 'staff'
                 if person.office is None:
                     new_person.office = None
+                else:
+                    new_person.office = person.office.name
             elif isinstance(person,Fellow):
                 new_person.role = 'fellow'
                 if person.office is None:
@@ -268,7 +308,10 @@ class Dojo(object):
 
         print ("Data saved ")
 
-    def load_state(self, db='dojo_db'):
+    def load_state(self, db):
+
+
+        engine = create_engine('sqlite:///%s' % db)
 
         engine = create_engine('sqlite:///dojo_db')
         Session = sessionmaker(bind=engine)
@@ -292,44 +335,25 @@ class Dojo(object):
             if people.role == 'staff':
                 person_object = Staff(person_name)
                 self.all_people.append(person_object)
-                if office == None:
-                    person_object.office = None
-                else:
-                    person_object.office = office
-                    for room in self.offices:
-                        if office == room.name:
-                            person_office = room
-                    person_office.occupants.append(person_object)
-            if people.role == 'fellow':
+                for room in self.offices:
+                    if people.office == room.name:
+                        person_object.office = room
+                        room.occupants.append(person_object)
+            elif people.role == 'fellow':
                 person_object = Fellow(person_name)
                 self.all_people.append(person_object)
-                if office == None:
-                    person_object.office = None
-                else:
-                    person_object.office = office
-                    for room in self.offices:
-                        if office == room.name:
-                            person_office = room
-                    person_office.occupants.append(person_object)
-                if living == None:
-                    person_object.living = None
-                else:
-                    person_object.living = living
-                    for room in self.living_spaces:
-                        if hostel == room.name:
-                            person_hostel = room
-                    person_hostel.occupants.append(person_object)
-                if people.unallocated == 'office':
-                    self.unallocated_office.append(person_object)
-                elif people.unallocated == 'living':
-                    self.unallocated_living.append(person_object)
+                for room in self.offices:
+                    if people.office == room.name:
+                        person_object.office = room
+                        room.occupants.append(person_object)
+
+                for room in self.living_spaces:
+                    if people.living == room.name:
+                        person_object.living = room
+                        room.occupants.append(person_object)
 
 
-
-
-
-new = Dojo()
-
-
-new.load_state()
-new.add_person("Alex","staff",'N')
+            if people.unallocated == 'office':
+                self.unallocated_office.append(person_object)
+            elif people.unallocated == 'living':
+                self.unallocated_living.append(person_object)

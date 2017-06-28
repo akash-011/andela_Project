@@ -8,7 +8,10 @@ Usage:
     dojo print_room <room_name>
     dojo print_allocated [-o = <filename>]
     dojo print_uncallocated [-o = <filename>]
-    dojo reallocate_person <first_name> <last_name>
+    dojo reallocate_person <first_name> <last_name> <room_name>
+    dojo load_people <filename>
+    dojo save_state [-d = <db_name>]
+    dojo load_state <db_name>
     dojo (-i | --interactive)
 
 
@@ -129,12 +132,36 @@ class MyInteractive(cmd.Cmd):
 
 
     @docopt_cmd
-    def do_reallocate_person(sefl,arg)
-    """Usage: reallocate_person <first_name> <last_name> """
+    def do_reallocate_person(self,arg):
+        """Usage: reallocate_person <first_name> <last_name> <room_name>"""
         name = arg['<first_name>'] + " "+ arg['<last_name>']
-        new.reallocate_person(name)
+        room = arg['<room_name>']
+        new.reallocate_person(name,room)
 
-    
+    @docopt_cmd
+    def do_save_state(self,arg):
+        """Usage: save_state [-d = <db_name>] """
+        if arg['-d'] is True:
+            db = arg['<db_name>']
+        else:
+            db = 'dojo_db'
+
+        new.save_state(db)
+
+
+    @docopt_cmd
+    def do_load_people(self,arg):
+        """Usage: load_people <filename> """
+        filename = arg['<filename>']
+        new.load_people(filename)
+
+
+    @docopt_cmd
+    def do_load_state(self,arg):
+        """Usage: load_state <db_name>  """
+        dbname = arg['<db_name>']
+        new.load_state(dbname)
+
 
 
 
