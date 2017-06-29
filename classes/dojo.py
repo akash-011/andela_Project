@@ -19,7 +19,7 @@ class Dojo(object):
 
 
     def create_room(self, room_type, room_list):
-
+        # Creates room of list of rooms
         found = False
         if room_type == 'office':
             for each in room_list:
@@ -28,7 +28,7 @@ class Dojo(object):
                         found = True
                     else:
                         found = False
-
+                #if room does not exist creates room
                 if found == False:
                     new_room = Office(each)
                     self.offices.append(new_room)
@@ -52,7 +52,7 @@ class Dojo(object):
                     print("Room name", each, "already in use")
 
     def update_room(self):
-
+        #creates list of room with available spaces
         for room in self.offices:
             if len(room.occupants) < 7:
                 self.allocations_offices.append(room)
@@ -63,7 +63,7 @@ class Dojo(object):
 
 
     def allocate_office(self, person_name):
-
+        #allocates random office to person
         self.update_room()
 
         for person in self.all_people:
@@ -81,7 +81,7 @@ class Dojo(object):
 
 
     def allocate_living(self, person_name):
-
+        #allocates random liivng space for person
         self.update_room()
 
         for person in self.all_people:
@@ -100,6 +100,7 @@ class Dojo(object):
 
 
     def add_person(self, person_name, position, accomodation):
+        #add person to dojo
         found = False
         for person in self.all_people:
             if person.name == person_name:
@@ -107,7 +108,7 @@ class Dojo(object):
 
             else:
                 found = False
-
+        #creates person if person does not exist
         if found == False:
             if position == 'fellow':
                 new_person = Fellow(person_name)
@@ -129,14 +130,14 @@ class Dojo(object):
             print(person_name, "has already been added")
 
     def print_room(self, room_name):
-
+        #print all people in room_name to screen
         for room in self.offices or self.living_spaces:
             if room_name == room.name:
                 for person in room.occupants:
                     print (person.name)
 
     def print_allocations(self):
-
+        #print all people who have been allocated
         for room in self.offices:
             print (room.name)
             if len(room.occupants) > 0:
@@ -251,7 +252,7 @@ class Dojo(object):
                 self.add_person(name, person_role, staying)
 
     def save_state(self, db):
-
+        #saves all data to sqlite db
 
         engine = create_engine('sqlite:///%s' % db)
 
@@ -310,7 +311,7 @@ class Dojo(object):
 
     def load_state(self, db):
 
-
+        #loads all rooms, people and allocations from db
         engine = create_engine('sqlite:///%s' % db)
 
 
