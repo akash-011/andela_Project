@@ -76,7 +76,7 @@ class Dojo(object):
             name_person.office = allocate
             print("An office", allocate.name, "has been allocated to", name_person.name,)
         else:
-            self.unallocated_office.append(name_person)
+            self.unallocated_office.append(person_name)
             print("No offices to allocate")
 
 
@@ -199,8 +199,8 @@ class Dojo(object):
 
 
     def reallocate_person(self, person_name, new_room):
-        found_person = True
-        found_room = True
+        found_person = False
+        found_room = False
         all_rooms = self.offices + self.living_spaces
 
         for person in self.all_people:
@@ -313,7 +313,7 @@ class Dojo(object):
 
         engine = create_engine('sqlite:///%s' % db)
 
-        engine = create_engine('sqlite:///dojo_db')
+
         Session = sessionmaker(bind=engine)
         session = Session()
         everyone = session.query(People).all()
@@ -357,3 +357,5 @@ class Dojo(object):
                 self.unallocated_office.append(person_object)
             elif people.unallocated == 'living':
                 self.unallocated_living.append(person_object)
+
+            print ("Data Loaded")

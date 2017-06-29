@@ -6,3 +6,4 @@ classes/__pycache__/*
 project/*
 dojoenv/*
 classes/dojo_db
+classes/.coverage
