@@ -112,7 +112,7 @@ class Dojo(object):
         if found == False:
             if position == 'fellow':
                 new_person = Fellow(person_name)
-                print ("Person Added")
+                print (person_name,"has been added")
                 self.all_people.append(new_person)
                 if accomodation == 'Y':
                     self.allocate_office(person_name)
@@ -121,6 +121,7 @@ class Dojo(object):
                     self.allocate_office(person_name)
             elif position == 'staff':
                 new_person = Staff(person_name)
+                print (person_name,"has been added")
                 self.all_people.append(new_person)
                 self.allocate_office(person_name)
                 if accomodation == 'Y':
