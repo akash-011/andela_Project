@@ -131,7 +131,7 @@ class TestDojo(unittest.TestCase):
         self.new.create_room('office',['jbo'])
         self.new.add_person('Joe','staff','N')
         self.new.save_state('dojo_db')
-        engine = create_engine('sqlite:///dojo_db')
+        engine = create_engine('sqlite:///dojo')
         Session = sessionmaker()
         Session.configure(bind=engine)
         session = Session()
@@ -143,6 +143,8 @@ class TestDojo(unittest.TestCase):
     def test_load_state_data(self):
         self.new.load_state('dojo_db')
         self.assertEqual(len(self.new.all_people),1)
+        os.remove('dojo_db')
+
 
     def test_load_people(self):
         self.new.create_room('office',['jbo'])

@@ -32,6 +32,7 @@ class Dojo(object):
                 if found == False:
                     new_room = Office(each)
                     self.offices.append(new_room)
+                    self.allocations_offices.append(new_room)
                     print("An Office called", new_room.name, "has been created")
 
                 else:
@@ -47,6 +48,7 @@ class Dojo(object):
                 if found == False:
                     new_room = Living_spaces(each)
                     self.living_spaces.append(new_room)
+                    self.allocations_living.append(new_room)
                     print("A Living Space called", new_room.name, "has been created")
                 else:
                     print("Room name", each, "already in use")
@@ -54,16 +56,19 @@ class Dojo(object):
     def update_room(self):
         #creates list of room with available spaces
         for room in self.offices:
-            if len(room.occupants) < 7:
-                self.allocations_offices.append(room)
+            if len(room.occupants) >= 6:
+                self.allocations_offices.remove(room)
+    def update_living(self):
 
         for room in self.living_spaces:
-            if len(room.occupants) < 5:
-                self.allocations_living.append(room)
+            if len(room.occupants) >= 4:
+                self.allocations_living.remove(room)
+
 
 
     def allocate_office(self, person_name):
         #allocates random office to person
+
         self.update_room()
 
         for person in self.all_people:
@@ -82,7 +87,7 @@ class Dojo(object):
 
     def allocate_living(self, person_name):
         #allocates random liivng space for person
-        self.update_room()
+        self.update_living()
 
         for person in self.all_people:
             if person_name == person.name:
@@ -139,21 +144,24 @@ class Dojo(object):
 
     def print_allocations(self):
         #print all people who have been allocated
-        for room in self.offices:
-            print (room.name)
-            if len(room.occupants) > 0:
-                for member in room.occupants:
-                    print (member.name)
-            else:
-                print ("Room Empty")
+        if len(self.offices) == 0 and len(self.living_spaces) == 0:
+            print ("No Allocations ")
+        else:
+            for room in self.offices:
+                print (room.name)
+                if len(room.occupants) > 0:
+                    for member in room.occupants:
+                        print (member.name)
+                else:
+                    print ("Room Empty")
 
-        for room in self.living_spaces:
-            print (room.name)
-            if len(room.occupants) > 0:
-                for member in room.occupants:
-                    print (member.name)
-            else:
-                print ("Room Empty")
+            for room in self.living_spaces:
+                print (room.name)
+                if len(room.occupants) > 0:
+                    for member in room.occupants:
+                        print (member.name)
+                else:
+                    print ("Room Empty")
     def print_unallocated(self):
 
         print(self.unallocated_office)
@@ -214,44 +222,48 @@ class Dojo(object):
             if new_room == each_object.name:
                 new_room = each_object
                 found_room = True
-
-        if found_room is True and found_person is True:
-            if r_name.name in self.unallocated_office or self.unallocated_living:
-                    print ("Unallocated Person cannot be reallocated")
-            else:
-                if isinstance(new_room, Office):
-
-                    r_name.office.occupants.remove(r_name)
-                    new_room.occupants.append(r_name)
-                    print(r_name.name ,"has been realloated to", new_room.name)
-
-
-                if isinstance(new_room, Living_spaces):
-                    r_name.living.occupants.remove(r_name)
-                    new_room.occupants.append(r_name)
-                    print(r_name.name ,"has been realloated to", new_room.name)
+        if isinstance(r_name, Staff) and isinstance (new_room,Living_spaces):
+            print ("Cant reallocate a Staff to living Space")
         else:
-            print("Person or Room not found ")
+            if found_room is True and found_person is True:
+                if r_name.name in self.unallocated_office or self.unallocated_living:
+                        print ("Unallocated Person cannot be reallocated")
+                else:
+                    if isinstance(new_room, Office):
+
+                        r_name.office.occupants.remove(r_name)
+                        new_room.occupants.append(r_name)
+                        print(r_name.name ,"has been realloated to", new_room.name)
+
+
+                    if isinstance(new_room, Living_spaces):
+                        r_name.living.occupants.remove(r_name)
+                        new_room.occupants.append(r_name)
+                        print(r_name.name ,"has been realloated to", new_room.name)
+            else:
+                print("Person or Room not found ")
 
     def load_people(self, file):
-        with open(file, 'r') as file:
+        try:
+            with open(file, 'r') as file:
 
-            file_content = file.readlines()
+                file_content = file.readlines()
 
-            for line in file_content:
-                information = line.split()
-                first_name = information[0]
-                second_name = information[1]
-                name = first_name + ' ' + second_name
-                person_role = information[2].lower()
+                for line in file_content:
+                    information = line.split()
+                    first_name = information[0]
+                    second_name = information[1]
+                    name = first_name + ' ' + second_name
+                    person_role = information[2].lower()
 
-                try:
-                    staying = information[3].upper()
+                    try:
+                        staying = information[3].upper()
 
-                except:
-                    staying = 'N'
-                self.add_person(name, person_role, staying)
-
+                    except:
+                        staying = 'N'
+                    self.add_person(name, person_role, staying)
+        except FileNotFoundError:
+            print ("File not found")
     def save_state(self, db):
         #saves all data to sqlite db
 
