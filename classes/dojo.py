@@ -58,11 +58,18 @@ class Dojo(object):
         for room in self.offices:
             if len(room.occupants) >= 6:
                 self.allocations_offices.remove(room)
+            else:
+                if room not in self.allocations_offices:
+                    self.allocations_offices.append(room)
+
     def update_living(self):
 
         for room in self.living_spaces:
             if len(room.occupants) >= 4:
                 self.allocations_living.remove(room)
+            else:
+                if room not in self.allocations_living:
+                    self.allocations_living.append(room)
 
 
 
@@ -137,7 +144,7 @@ class Dojo(object):
 
     def print_room(self, room_name):
         #print all people in room_name to screen
-        for room in self.offices or self.living_spaces:
+        for room in self.offices + self.living_spaces:
             if room_name == room.name:
                 for person in room.occupants:
                     print (person.name)
@@ -213,6 +220,8 @@ class Dojo(object):
         found_room = False
         all_rooms = self.offices + self.living_spaces
 
+
+
         for person in self.all_people:
             if person_name == person.name:
                 r_name = person
@@ -222,8 +231,12 @@ class Dojo(object):
             if new_room == each_object.name:
                 new_room = each_object
                 found_room = True
+
+
         if isinstance(r_name, Staff) and isinstance (new_room,Living_spaces):
             print ("Cant reallocate a Staff to living Space")
+        elif isinstance (r_name, Fellow) and r_name.living == None:
+            print ("Fellow does not have a living space")
         else:
             if found_room is True and found_person is True:
                 if r_name.name in self.unallocated_office or self.unallocated_living:
@@ -231,15 +244,26 @@ class Dojo(object):
                 else:
                     if isinstance(new_room, Office):
 
-                        r_name.office.occupants.remove(r_name)
-                        new_room.occupants.append(r_name)
-                        print(r_name.name ,"has been realloated to", new_room.name)
 
+                        if len(new_room.occupants) < 6:
+                            new_room.occupants.append(r_name)
+                            r_name.office.occupants.remove(r_name)
+                            r_name.office = new_room
+                            print(r_name.name ,"has been realloated to", new_room.name)
+                        else:
+                            print (new_room.name , "is fully occupied")
 
                     if isinstance(new_room, Living_spaces):
-                        r_name.living.occupants.remove(r_name)
-                        new_room.occupants.append(r_name)
-                        print(r_name.name ,"has been realloated to", new_room.name)
+
+
+                        if len(new_room.occupants) < 4:
+                            new_room.occupants.append(r_name)
+                            r_name.living.occupants.remove(r_name)
+                            r_name.living = new_room
+                            print(r_name.name ,"has been realloated to", new_room.name)
+                        else:
+                            print (new_room.name, "is full")
+
             else:
                 print("Person or Room not found ")
 
