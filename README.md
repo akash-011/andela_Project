@@ -4,7 +4,7 @@
 ## Dojo App
 
 
-> When a new Fellow joins Andela they are assigned an office space and an optional living space if they choose to opt in. When a new Staff joins they are assigned an office space only. In this exercise you will be required to digitize and randomize a room allocation system for one of Andela Kenya’s facilities called The Dojo.
+When a new Fellow joins Andela they are assigned an office space and an optional living space if they choose to opt in. When a new Staff joins they are assigned an office space only. In this exercise you will be required to digitize and randomize a room allocation system for one of Andela Kenya’s facilities called The Dojo.
 
 ----
 ## usage
@@ -23,7 +23,7 @@ and for interactive mode run as follows:
     python3 main.py -i
 
 ## Asciicast Demo
-see[assicast] https://asciinema.org/a/1l2ks6rn2is77nbe2v7tjsvus
+see[assicast]https://asciinema.org/a/1l2ks6rn2is77nbe2v7tjsvus
 
 ----
 
